@@ -1,0 +1,33 @@
+name: 'Workflow dispatch action'
+description: 'This action dipatch to downstream workflow and return URL'
+inputs:
+  downstream_workflow_repo:
+    description: 'TBD'
+    required: true
+  downstream_workflow_name:
+    description: 'TBD'
+    required: true
+    default: 'workflow.yaml'
+  downstream_workflow_branch:
+    description: 'TBD'
+    required: true
+    default: 'master'
+  token:
+    description: 'TBD'
+    required: true
+  downstream_workflow_input_variables:
+    description: 'TBD'
+    required: true
+outputs:
+  downstream_job_url:
+    description: "TBD"
+    value: ${{ steps.workflow-dispatch.outputs.downstream-url }}
+runs:
+  using: "composite"
+  steps:
+    - id: workflow-dispatch
+      name: TEST
+      shell: bash
+      run: |
+        ${{ github.action_path }}/workflow-dispatch.sh ${{ inputs.downstream_workflow_repo }} ${{ inputs.downstream_workflow_name }} ${{ inputs.downstream_workflow_branch }} ${{ inputs.token }} ${{ github.run_id}} ${{ github.repository}} '${{inputs.downstream_workflow_input_variables }}'
+        echo "::set-output name=downstream-url::$(cat job_url)"
